@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sowrabha A — Cloud Data Engineer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --border: #1f1f2e;
+      --accent: #00e5c0;
+      --accent2: #7b5ea7;
+      --accent3: #ff6b6b;
+      --text: #e8e8f0;
+      --muted: #7a7a96;
+      --heading: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 999; opacity: 0.4;
+    }
+
+    /* ── GRID BG ── */
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(0,229,192,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,192,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    /* ── GLOW ORBS ── */
+    .orb {
+      position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
+      filter: blur(80px); opacity: 0.12;
+    }
+    .orb-1 { width: 500px; height: 500px; background: var(--accent); top: -100px; right: -100px; animation: drift 12s ease-in-out infinite alternate; }
+    .orb-2 { width: 400px; height: 400px; background: var(--accent2); bottom: 10%; left: -150px; animation: drift 15s ease-in-out infinite alternate-reverse; }
+    @keyframes drift { from { transform: translate(0,0); } to { transform: translate(30px, 40px); } }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 60px;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px;
+      color: var(--accent); letter-spacing: 0.05em;
+    }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 12px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── MAIN LAYOUT ── */
+    main { position: relative; z-index: 1; }
+
+    section { max-width: 1000px; margin: 0 auto; padding: 0 40px; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding-top: 100px;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 28px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero-tag::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+    .hero-name {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(52px, 9vw, 96px); line-height: 0.95;
+      color: var(--heading); margin-bottom: 20px;
+      animation: fadeUp 0.6s 0.15s ease both;
+    }
+    .hero-name span { color: var(--accent); }
+    .hero-title {
+      font-size: 16px; color: var(--muted); max-width: 520px;
+      margin-bottom: 48px;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .hero-contacts {
+      display: flex; flex-wrap: wrap; gap: 16px;
+      animation: fadeUp 0.6s 0.45s ease both;
+    }
+    .contact-pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 18px; border: 1px solid var(--border);
+      border-radius: 40px; color: var(--muted); text-decoration: none;
+      font-size: 12px; transition: all 0.2s; background: var(--card);
+    }
+    .contact-pill:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+    .contact-pill svg { width: 14px; height: 14px; }
+    .hero-scroll {
+      position: absolute; bottom: 40px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--muted); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+      animation: fadeUp 0.6s 0.8s ease both;
+    }
+    .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+    @keyframes scrollPulse { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+    /* ── SECTION HEADER ── */
+    .sec-header {
+      display: flex; align-items: center; gap: 20px; margin-bottom: 48px;
+    }
+    .sec-num {
+      font-size: 11px; letter-spacing: 0.2em; color: var(--accent);
+      font-family: 'DM Mono', monospace;
+    }
+    .sec-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 28px; color: var(--heading);
+    }
+    .sec-line { flex: 1; height: 1px; background: var(--border); }
+
+    /* ── SKILLS ── */
+    #skills { padding-top: 120px; padding-bottom: 80px; }
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .skill-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px;
+      transition: all 0.3s; cursor: default;
+      position: relative; overflow: hidden;
+    }
+    .skill-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--accent), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .skill-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,229,192,0.1); }
+    .skill-card:hover::before { opacity: 0.05; }
+    .skill-category {
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 12px; font-family: 'DM Mono', monospace;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .skill-tag {
+      font-size: 12px; padding: 4px 10px;
+      background: var(--border); color: var(--text);
+      border-radius: 4px; position: relative; z-index: 1;
+    }
+
+    /* ── EXPERIENCE ── */
+    #experience { padding-bottom: 80px; }
+    .exp-list { display: flex; flex-direction: column; gap: 32px; }
+    .exp-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 36px; position: relative;
+      transition: border-color 0.3s;
+    }
+    .exp-card:hover { border-color: var(--accent2); }
+    .exp-card::before {
+      content: ''; position: absolute; left: 0; top: 36px; bottom: 36px;
+      width: 3px; background: var(--accent); border-radius: 0 3px 3px 0;
+    }
+    .exp-card.nokia::before { background: var(--accent2); }
+    .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
+    .exp-role { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px; color: var(--heading); }
+    .exp-period {
+      font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 5px 12px; background: var(--border); border-radius: 20px; color: var(--muted);
+    }
+    .exp-company { color: var(--accent); font-size: 13px; margin-bottom: 20px; }
+    .exp-card.nokia .exp-company { color: var(--accent2); }
+    .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .exp-bullets li { display: flex; gap: 12px; color: var(--muted); font-size: 13px; line-height: 1.65; }
+    .exp-bullets li::before { content: '▹'; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+    .exp-card.nokia .exp-bullets li::before { color: var(--accent2); }
+    .metric {
+      color: var(--accent); font-weight: 400;
+    }
+    .exp-card.nokia .metric { color: var(--accent2); }
+
+    /* ── PROJECTS ── */
+    #projects { padding-bottom: 80px; }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .project-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px;
+      display: flex; flex-direction: column; gap: 16px;
+      transition: all 0.3s; text-decoration: none;
+    }
+    .project-card:hover { border-color: var(--accent3); transform: translateY(-6px); box-shadow: 0 20px 50px rgba(255,107,107,0.1); }
+    .project-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent3), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .project-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px; color: var(--heading); }
+    .project-desc { font-size: 12px; color: var(--muted); line-height: 1.65; flex: 1; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .project-tag { font-size: 11px; padding: 3px 9px; border: 1px solid var(--border); color: var(--muted); border-radius: 4px; }
+    .project-link { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--accent3); margin-top: auto; }
+
+    /* ── PUBLICATIONS ── */
+    #publications { padding-bottom: 80px; }
+    .pub-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 36px;
+      display: flex; gap: 24px; align-items: flex-start;
+      transition: border-color 0.3s;
+    }
+    .pub-card:hover { border-color: var(--accent); }
+    .pub-badge {
+      flex-shrink: 0; width: 48px; height: 48px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    .pub-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px; color: var(--heading); margin-bottom: 8px; }
+    .pub-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+    .pub-meta { font-size: 11px; color: var(--accent); letter-spacing: 0.1em; }
+
+    /* ── CERTS ── */
+    #certifications { padding-bottom: 120px; }
+    .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+    .cert-item {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 18px 20px;
+      display: flex; align-items: center; gap: 12px;
+      transition: all 0.2s;
+    }
+    .cert-item:hover { border-color: var(--accent); transform: translateX(4px); }
+    .cert-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .cert-name { font-size: 12px; color: var(--text); line-height: 1.4; }
+
+    /* ── EDUCATION ── */
+    #education { padding-bottom: 80px; }
+    .edu-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 36px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 20px;
+    }
+    .edu-left {}
+    .edu-degree { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px; color: var(--heading); margin-bottom: 6px; }
+    .edu-school { font-size: 14px; color: var(--muted); }
+    .edu-right { text-align: right; }
+    .edu-cgpa { font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 800; color: var(--accent); line-height: 1; }
+    .edu-cgpa-label { font-size: 11px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 4px; }
+    .edu-year { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      position: relative; z-index: 1;
+    }
+    footer span { color: var(--accent); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      section { padding: 0 20px; }
+      .hero-name { font-size: 52px; }
+      #hero { padding-top: 90px; }
+      .pub-card { flex-direction: column; }
+      .edu-right { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">SA/</div>
+  <div class="nav-links">
+    <a href="#skills">Skills</a>
+    <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
+    <a href="#publications">Publications</a>
+    <a href="#certifications">Certs</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-tag">Cloud Data Engineer</div>
+    <h1 class="hero-name">Sowrabha<br/><span>A.</span></h1>
+    <p class="hero-title">Building high-performance data pipelines &amp; cloud-native ETL systems on AWS &amp; Snowflake. Currently at Carelon Global Solutions.</p>
+    <div class="hero-contacts">
+      <a class="contact-pill" href="mailto:sowrabhaa.bharadwaj@gmail.com">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+        sowrabhaa.bharadwaj@gmail.com
+      </a>
+      <a class="contact-pill" href="https://linkedin.com/in/sowrabha-a-5b8282254" target="_blank">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.26 2.37 4.26 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zm1.78 13.02H3.56V9h3.56v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46C23.2 24 24 23.23 24 22.28V1.72C24 .77 23.2 0 22.23 0z"/></svg>
+        LinkedIn
+      </a>
+      <a class="contact-pill" href="https://github.com/Sowrabha-A" target="_blank">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.65.24 2.87.12 3.17.77.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+      <a class="contact-pill" href="tel:9019747192">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 4.9 2 2 0 0 1 3.6 2.69h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.26a16 16 0 0 0 6.08 6.08l1.63-1.63a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        9019747192
+      </a>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      scroll
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="sec-header reveal">
+      <span class="sec-num">00</span>
+      <h2 class="sec-title">Education</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="edu-card reveal">
+      <div class="edu-left">
+        <div class="edu-degree">B.E. — Computer Science</div>
+        <div class="edu-school">New Horizon College of Engineering, Bengaluru</div>
+        <div class="edu-year">2020 – 2024</div>
+      </div>
+      <div class="edu-right">
+        <div class="edu-cgpa">9.4</div>
+        <div class="edu-cgpa-label">CGPA</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="sec-header reveal">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">Skills</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card reveal">
+        <div class="skill-category">Cloud Platforms</div>
+        <div class="skill-tags">
+          <span class="skill-tag">AWS</span>
+          <span class="skill-tag">Snowflake</span>
+          <span class="skill-tag">Databricks</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-category">Programming</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">SQL</span>
+          <span class="skill-tag">PySpark</span>
+          <span class="skill-tag">NumPy</span>
+          <span class="skill-tag">Pandas</span>
+          <span class="skill-tag">Java</span>
+          <span class="skill-tag">C++</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-category">CI/CD & Big Data</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Docker</span>
+          <span class="skill-tag">GIT</span>
+          <span class="skill-tag">Postman</span>
+          <span class="skill-tag">MySQL</span>
+          <span class="skill-tag">Hadoop</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-category">Other Tools</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Jira</span>
+          <span class="skill-tag">Confluence</span>
+          <span class="skill-tag">DBeaver</span>
+          <span class="skill-tag">Gerrit</span>
+          <span class="skill-tag">Bitbucket</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="sec-header reveal">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title">Experience</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="exp-list">
+      <!-- Carelon -->
+      <div class="exp-card reveal">
+        <div class="exp-header">
+          <div class="exp-role">Cloud Data Engineer</div>
+          <div class="exp-period">Sep 2024 – Present</div>
+        </div>
+        <div class="exp-company">Carelon Global Solutions</div>
+        <ul class="exp-bullets">
+          <li>Designed and optimized complex ETL frameworks using Python, SQL, and AWS Glue within a Medallion Architecture on AWS/Snowflake — enhanced data processing efficiency by <span class="metric">40%</span>, increased data availability by <span class="metric">55%</span>, and ensured <span class="metric">99%</span> reliability for high-volume semi-structured datasets.</li>
+          <li>Utilized a TDD approach to develop complex Snowflake SQL for data warehousing and transformation. Implemented flag-based incremental logic and primary keys to eliminate duplicates — resulting in a <span class="metric">65%</span> improvement in data accuracy and guaranteed downstream data quality.</li>
+          <li>Rigorously tested and validated Snowflake data pipelines and AWS-based workflows, proactively monitoring production environments and resolving critical failures within SLA timelines.</li>
+          <li>Developed Python-based Member Match % scripts to trigger automated email alerts when thresholds fell below targets — increasing data accuracy visibility by <span class="metric">45%</span> and strengthening data governance.</li>
+        </ul>
+      </div>
+      <!-- Nokia -->
+      <div class="exp-card nokia reveal">
+        <div class="exp-header">
+          <div class="exp-role">DevOps Engineer</div>
+          <div class="exp-period">Sep 2023 – May 2024</div>
+        </div>
+        <div class="exp-company">Nokia</div>
+        <ul class="exp-bullets">
+          <li>Engineered and deployed an internal Code-Review-Analyzer tool using Python, Postman, and Groovy to extract, analyze, and automate daily reporting of code review data from Git. Utilized Jenkins for scheduling and automated email delivery.</li>
+          <li>Enhanced security for the NAPD project by modifying Dockerfiles to enforce non-root user privileges and read-only containers — achieving an estimated <span class="metric">60–80%</span> reduction in severity of potential container escape vulnerabilities.</li>
+          <li>Optimized CI pipeline stages (regression, tagging) for NAPD, decreasing build failure rates by <span class="metric">22%</span> and accelerating release velocity by <span class="metric">10%</span>, leading to faster product iterations.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="sec-header reveal">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">Projects</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card reveal">
+        <div class="project-icon">🎯</div>
+        <div class="project-name">Anomaly Detection in Video Surveillance</div>
+        <div class="project-desc">Built and deployed an ML-driven video surveillance system utilizing Python/OpenCV and the YOLO algorithm to automate real-time detection of high-priority abnormal behaviors such as violence and firearm possession.</div>
+        <div class="project-tags">
+          <span class="project-tag">Python</span>
+          <span class="project-tag">OpenCV</span>
+          <span class="project-tag">YOLO</span>
+          <span class="project-tag">ML</span>
+        </div>
+        <div class="project-link">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          View Project
+        </div>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-icon">📊</div>
+        <div class="project-name">YouTube Data Insights</div>
+        <div class="project-desc">Engineered a scalable end-to-end ETL pipeline for large-scale YouTube data using a serverless AWS architecture (Lambda, Glue/PySpark, S3), automating ingestion and normalization of nested JSON data with complex high-volume transformations.</div>
+        <div class="project-tags">
+          <span class="project-tag">AWS Lambda</span>
+          <span class="project-tag">AWS Glue</span>
+          <span class="project-tag">PySpark</span>
+          <span class="project-tag">S3</span>
+        </div>
+        <div class="project-link">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          View Project
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PUBLICATIONS -->
+  <section id="publications">
+    <div class="sec-header reveal">
+      <span class="sec-num">04</span>
+      <h2 class="sec-title">Publications</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="pub-card reveal">
+      <div class="pub-badge">📄</div>
+      <div>
+        <div class="pub-title">Anomaly Detection in Video Surveillance</div>
+        <div class="pub-desc">Proposed an ML-based framework using YOLO for automated anomaly detection in video surveillance to enhance real-time public safety monitoring and reduce human intervention.</div>
+        <div class="pub-meta">IEEE Xplore · 2024</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+  <section id="certifications">
+    <div class="sec-header reveal">
+      <span class="sec-num">05</span>
+      <h2 class="sec-title">Certifications</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="certs-grid">
+      <div class="cert-item reveal">
+        <div class="cert-dot"></div>
+        <div class="cert-name">Hands On Essential Data Warehouse</div>
+      </div>
+      <div class="cert-item reveal">
+        <div class="cert-dot"></div>
+        <div class="cert-name">Crash Course on Python</div>
+      </div>
+      <div class="cert-item reveal">
+        <div class="cert-dot"></div>
+        <div class="cert-name">Databricks Fundamentals Accreditation</div>
+      </div>
+      <div class="cert-item reveal">
+        <div class="cert-dot"></div>
+        <div class="cert-name">Spark to Snowpark with the SMA</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Crafted with precision · <span>Sowrabha A</span> · Bengaluru, India</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Stagger skill cards
+  document.querySelectorAll('.skill-card.reveal, .cert-item.reveal').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 0.06}s`;
+  });
+</script>
+</body>
+</html>
